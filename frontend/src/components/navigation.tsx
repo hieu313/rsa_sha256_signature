@@ -25,7 +25,7 @@ const navigationItems = [
     icon: FileSignature,
   },
   {
-    name: "Xác thực",
+    name: "Xác thực chữ ký",
     href: ROUTES.VERIFY,
     icon: Shield,
   },
@@ -46,7 +46,7 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-white shadow-lg border-b">
+    <nav className="bg-white shadow-lg border-b mb-10">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
