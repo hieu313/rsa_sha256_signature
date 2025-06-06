@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { ROUTES } from "@/constants/routes"
 import Link from "next/link"
 
 export default function RegisterForm() {
@@ -40,7 +41,7 @@ export default function RegisterForm() {
       <CardFooter className="flex flex-col gap-4">
         <Button className="w-full hover:bg-blue-500 transition-colors">Register</Button>
         <Separator />
-        <p className="text-center">Already have an account? <Link href="/login" className="text-blue-500">Login</Link> here.</p>
+        <p className="text-center">Already have an account? <Link href={ROUTES.LOGIN} className="text-blue-500">Login</Link> here.</p>
       </CardFooter>
     </Card>
   )
