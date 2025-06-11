@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-RsaSignatureApplication<rsa-signature-backend>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.rsasignature.RsaSignatureApplication",
+            "projectName": "rsa-signature-backend",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-RsaSignatureApplication<rsa-sha256-signature>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.rsasignature.RsaSignatureApplication",
+            "projectName": "rsa-sha256-signature",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
