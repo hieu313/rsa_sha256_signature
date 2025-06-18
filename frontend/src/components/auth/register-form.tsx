@@ -1,48 +1,142 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { ROUTES } from "@/constants/routes"
-import Link from "next/link"
+"use client";
+
+import AuthWrapper from "@/components/auth/auth-wrapper";
+import { Button } from "@/components/ui/button";
+import { CardContent, CardFooter } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { Separator } from "@/components/ui/separator";
+import { ROUTES } from "@/constants/routes";
+import { registerSchema } from "@/schemas/auth.schema";
+import { authService } from "@/services/auth-service";
+import { RegisterFormData } from "@/types/auth.type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
+  const router = useRouter();
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      confirm_password: "",
+      accept_terms: true,
+    },
+  });
+
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const response = await authService.register(data.username, data.password);
+      toast.error(response.data, {
+        position: "top-right",
+      });
+      if (response.status === 200) {
+        router.push(ROUTES.LOGIN);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Register failed", {
+        position: "top-right",
+      });
+    }
+  };
+
   return (
-    <Card className="min-w-[400px]">
-      <CardHeader>
-        <CardTitle className="text-2xl text-center">Register</CardTitle>
-        <CardDescription className="space-y-2 flex flex-col items-center">
-          <p>Please enter your details to register.</p>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="Your email" required name="email" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" type="text" placeholder="Your name" required name="name" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" required name="password" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <Input id="confirmPassword" type="password" required name="confirmPassword" />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="terms" />
-          <Label htmlFor="terms">I agree to the<Link href="/terms" className="text-blue-500">terms and conditions</Link></Label>
-        </div>
-      </CardContent>
-      <CardFooter className="flex flex-col gap-4">
-        <Button className="w-full hover:bg-blue-500 transition-colors">Register</Button>
-        <Separator />
-        <p className="text-center">Already have an account? <Link href={ROUTES.LOGIN} className="text-blue-500">Login</Link> here.</p>
-      </CardFooter>
-    </Card>
-  )
+    <AuthWrapper
+      title="Register"
+      description="Please enter your details to register."
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4 my-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="Password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirm_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="Confirm Password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accept_terms"
+              render={({ field }) => (
+                <div className="flex cursor-pointer items-center space-x-2">
+                  <Checkbox
+                    id="accept_terms"
+                    name="accept_terms"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                  <label
+                    htmlFor="accept_terms"
+                    className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Accept Terms
+                  </label>
+                </div>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4">
+            <Button className="w-full" type="submit" variant="default">
+              Register
+            </Button>
+            <Separator />
+            <p className="text-center">
+              Already have an account?{" "}
+              <Link href={ROUTES.LOGIN} className="text-blue-500">
+                Login
+              </Link>{" "}
+              here.
+            </p>
+          </CardFooter>
+        </form>
+      </Form>
+    </AuthWrapper>
+  );
 }
