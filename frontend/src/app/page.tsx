@@ -1,8 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ROUTES } from "@/constants/routes"
-import { ArrowRight, FileSignature, Key, Shield } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ROUTES } from "@/constants/routes";
+import { ArrowRight, FileSignature, Key, Shield } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   {
@@ -26,16 +32,19 @@ const features = [
     href: ROUTES.VERIFY,
     color: "bg-purple-500",
   },
-]
+];
 
 export default function HomePage() {
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 mt-10">
       {/* Hero Section */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900">Chữ Ký Số RSA</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+          Chữ Ký Số RSA
+        </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Ứng dụng chữ ký số RSA với SHA256 - Tạo khóa, ký và xác thực thông điệp một cách an toàn
+          Ứng dụng chữ ký số RSA với SHA256 - Tạo khóa, ký và xác thực thông
+          điệp một cách an toàn
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <Link href={ROUTES.KEY_GENERATE}>
@@ -55,11 +64,16 @@ export default function HomePage() {
       {/* Features Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((feature) => {
-          const Icon = feature.icon
+          const Icon = feature.icon;
           return (
-            <Card key={feature.href} className="hover:shadow-lg transition-shadow">
+            <Card
+              key={feature.href}
+              className="hover:shadow-lg transition-shadow"
+            >
               <CardHeader>
-                <div className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center mb-4`}>
+                <div
+                  className={`w-12 h-12 ${feature.color} rounded-lg flex items-center justify-center mb-4`}
+                >
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -74,7 +88,7 @@ export default function HomePage() {
                 </Link>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -86,18 +100,21 @@ export default function HomePage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-gray-600">
-              Chữ ký số RSA là một phương pháp mật mã học được sử dụng để đảm bảo tính xác thực và toàn vẹn của dữ liệu.
-              Nó sử dụng cặp khóa công khai và riêng tư để tạo và xác minh chữ ký.
+              Chữ ký số RSA là một phương pháp mật mã học được sử dụng để đảm
+              bảo tính xác thực và toàn vẹn của dữ liệu. Nó sử dụng cặp khóa
+              công khai và riêng tư để tạo và xác minh chữ ký.
             </p>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>
                 • <strong>Tính xác thực:</strong> Xác nhận người gửi
               </li>
               <li>
-                • <strong>Tính toàn vẹn:</strong> Đảm bảo dữ liệu không bị thay đổi
+                • <strong>Tính toàn vẹn:</strong> Đảm bảo dữ liệu không bị thay
+                đổi
               </li>
               <li>
-                • <strong>Không thể từ chối:</strong> Người ký không thể phủ nhận
+                • <strong>Không thể từ chối:</strong> Người ký không thể phủ
+                nhận
               </li>
             </ul>
           </CardContent>
@@ -134,5 +151,5 @@ export default function HomePage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
