@@ -18,12 +18,12 @@ public class User {
     private UUID id;
 
     @Column(nullable = false, unique = true, length = 255)
-    private String username;
-
-    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(nullable = false, length = 255)
+    private String name;
+
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,8 +44,8 @@ public class User {
     }
 
     // Constructors
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
         this.password = password;
     }
