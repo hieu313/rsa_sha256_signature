@@ -1,11 +1,17 @@
 package com.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "public_keys")
+@Getter
+@Setter
+@NoArgsConstructor
 public class PublicKey {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

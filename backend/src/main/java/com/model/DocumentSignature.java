@@ -1,13 +1,19 @@
 package com.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "document_signatures")
+@Getter
+@Setter
+@NoArgsConstructor
 public class DocumentSignature {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,7 +29,7 @@ public class DocumentSignature {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "signing_key_id", nullable = false)
-    private UserPublicKey signingKey;
+    private PublicKey signingKey;
 
     @Column(name = "document_hash", nullable = false)
     private byte[] documentHash;
@@ -44,70 +50,5 @@ public class DocumentSignature {
     @PrePersist
     protected void onCreate() {
         signatureTimestamp = LocalDateTime.now();
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    public User getSigner() {
-        return signer;
-    }
-
-    public void setSigner(User signer) {
-        this.signer = signer;
-    }
-
-    public UserPublicKey getSigningKey() {
-        return signingKey;
-    }
-
-    public void setSigningKey(UserPublicKey signingKey) {
-        this.signingKey = signingKey;
-    }
-
-    public byte[] getDocumentHash() {
-        return documentHash;
-    }
-
-    public void setDocumentHash(byte[] documentHash) {
-        this.documentHash = documentHash;
-    }
-
-    public String getSignatureValue() {
-        return signatureValue;
-    }
-
-    public void setSignatureValue(String signatureValue) {
-        this.signatureValue = signatureValue;
-    }
-
-    public LocalDateTime getSignatureTimestamp() {
-        return signatureTimestamp;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public void setValid(boolean valid) {
-        isValid = valid;
-    }
-
-    public String getValidationDetails() {
-        return validationDetails;
-    }
-
-    public void setValidationDetails(String validationDetails) {
-        this.validationDetails = validationDetails;
     }
 } 
