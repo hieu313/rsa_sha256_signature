@@ -1,4 +1,3 @@
-
 package com.controller;
 
 import com.dto.LoginRequest;
@@ -22,5 +21,10 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/logout")
+    public String logout() {
+        return "Logout thành công (ví dụ)";
     }
 }
