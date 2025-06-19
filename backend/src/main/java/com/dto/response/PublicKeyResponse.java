@@ -13,20 +13,37 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PublicKeyResponse {
-    private PublicKey publicKey;
+    private UUID id;
+    private String keyAlias;
+    private String publicKeyPem;
+    private String fingerprint;
+    private LocalDateTime revokedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
+    private boolean isDefault;
+    private boolean revoked;
 
     public PublicKeyResponse(PublicKey publicKey) {
-        this.publicKey = publicKey;
+        this.id = publicKey.getId();
+        this.keyAlias = publicKey.getKeyAlias();
+        this.publicKeyPem = publicKey.getPublicKeyPem();
+        this.fingerprint = publicKey.getFingerprint();
+        this.revokedAt = publicKey.getRevokedAt();
+        this.createdAt = publicKey.getCreatedAt();
+        this.expiresAt = publicKey.getExpiresAt();
+        this.isDefault = publicKey.isDefault();
+        this.revoked = publicKey.isRevoked();
     }
 
     public static SuccessResponse<PublicKeyResponse> uploadSuccess(PublicKey publicKey) {
         return SuccessResponse.of("Upload public key success", new PublicKeyResponse(publicKey));
     }
 
-    public static SuccessResponse<PublicKeyResponse> getSuccess(List<PublicKey> publicKeys) {
-        return SuccessResponse.of("Get public keys success", (PublicKeyResponse) publicKeys.stream()
+    public static SuccessResponse<List<PublicKeyResponse>> getSuccess(List<PublicKey> publicKeys) {
+        List<PublicKeyResponse> responses = publicKeys.stream()
                 .map(PublicKeyResponse::new)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        return SuccessResponse.of("Get public keys success", responses);
     }
 
     public static SuccessResponse<PublicKeyResponse> revokeSuccess(PublicKey publicKey) {

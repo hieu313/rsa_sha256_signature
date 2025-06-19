@@ -49,20 +49,6 @@ public class PublicKeyController {
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse> getPublicKeysByUserId(@PathVariable UUID userId) {
-        try {
-            User user = userService.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Người dùng không tồn tại"));
-            
-            List<PublicKey> publicKeys = publicKeyService.findByUser(user);
-            return ResponseEntity.ok(PublicKeyResponse.getSuccess(publicKeys));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                .body(ErrorResponse.badRequest(e.getMessage()));
-        }
-    }
-
     @PostMapping("/{keyId}/revoke")
     public ResponseEntity<ApiResponse> revokePublicKey(
             @PathVariable UUID keyId,
