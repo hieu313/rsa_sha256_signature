@@ -203,3 +203,6 @@ README.html
 # Ignore H2 database files
 *.mv.db
 *.trace.db
+
+# Ignore env file
+.env
