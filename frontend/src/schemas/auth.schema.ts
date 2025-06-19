@@ -1,14 +1,21 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  username: z.string().min(1, { message: "Vui lòng nhập tên đăng nhập" }),
+  email: z
+    .string()
+    .email({ message: "Email không hợp lệ" })
+    .min(1, { message: "Vui lòng nhập email" }),
   password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
   remember_me: z.boolean(),
 });
 
 export const registerSchema = z
   .object({
-    username: z.string().min(1, { message: "Vui lòng nhập tên đăng nhập" }),
+    name: z.string().min(1, { message: "Vui lòng nhập tên" }),
+    email: z
+      .string()
+      .email({ message: "Email không hợp lệ" })
+      .min(1, { message: "Vui lòng nhập email" }),
     password: z.string().min(1, { message: "Vui lòng nhập mật khẩu" }),
     confirm_password: z
       .string()
