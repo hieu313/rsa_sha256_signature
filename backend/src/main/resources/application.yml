@@ -1,0 +1,2 @@
+jwt:
+  secret: "your-256-bit-secret-key-here-must-be-very-long-and-secure"
