@@ -4,32 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse extends ApiResponse {
+public class AuthResponse {
     private String token;
 
-    public AuthResponse(boolean success, String message, String token) {
-        super(success, message);
-        this.token = token;
+    public static SuccessResponse<AuthResponse> loginSuccess(String token) {
+        return SuccessResponse.of("Đăng nhập thành công", new AuthResponse(token));
     }
 
-    public static AuthResponse loginSuccess(String token) {
-        return new AuthResponse(true, "Đăng nhập thành công", token);
+    public static SuccessResponse<AuthResponse> registerSuccess(String token) {
+        return SuccessResponse.of("Đăng ký thành công", new AuthResponse(token));
     }
 
-    public static AuthResponse registerSuccess(String token) {
-        return new AuthResponse(true, "Đăng ký thành công", token);
-    }
-
-    public static AuthResponse logoutSuccess() {
-        return new AuthResponse(true, "Đăng xuất thành công", null);
-    }
-
-    public static AuthResponse error(String message) {
-        return new AuthResponse(false, message, null);
+    public static SuccessResponse<Void> logoutSuccess() {
+        return SuccessResponse.of("Đăng xuất thành công", null);
     }
 }

@@ -15,21 +15,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
+import {
+  AUTH_COOKIE_EXPIRES,
+  AUTH_COOKIE_NAME,
+} from "@/constants/auth.constant";
 import { ROUTES } from "@/constants/routes";
 import { loginSchema } from "@/schemas/auth.schema";
 import { authService } from "@/services/auth-service";
 import { LoginFormData } from "@/types/auth.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const router = useRouter();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       remember_me: true,
     },
@@ -37,12 +43,17 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await authService.login(data.username, data.password);
-      if (response.status === 200) {
+      const response = await authService.login(data);
+      if (response.success) {
+        Cookies.set(AUTH_COOKIE_NAME, response.data.token, {
+          expires: AUTH_COOKIE_EXPIRES,
+        });
+        toast.success("Login successful");
         router.push(ROUTES.HOME);
       }
     } catch (error) {
       console.log(error);
+      toast.error("Login failed");
     }
   };
 
@@ -56,12 +67,12 @@ export default function LoginForm() {
           <CardContent className="space-y-4 my-4">
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Username" {...field} />
+                    <Input type="text" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

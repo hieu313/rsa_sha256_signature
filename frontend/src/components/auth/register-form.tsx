@@ -15,11 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
+import {
+  AUTH_COOKIE_EXPIRES,
+  AUTH_COOKIE_NAME,
+} from "@/constants/auth.constant";
 import { ROUTES } from "@/constants/routes";
 import { registerSchema } from "@/schemas/auth.schema";
 import { authService } from "@/services/auth-service";
 import { RegisterFormData } from "@/types/auth.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -30,7 +35,8 @@ export default function RegisterForm() {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
       password: "",
       confirm_password: "",
       accept_terms: true,
@@ -39,18 +45,17 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await authService.register(data.username, data.password);
-      toast.error(response.data, {
-        position: "top-right",
-      });
-      if (response.status === 200) {
-        router.push(ROUTES.LOGIN);
+      const response = await authService.register(data);
+      if (response.success) {
+        Cookies.set(AUTH_COOKIE_NAME, response.data.token, {
+          expires: AUTH_COOKIE_EXPIRES,
+        });
+        toast.success("Register successful");
+        router.push(ROUTES.HOME);
       }
     } catch (error) {
       console.log(error);
-      toast.error("Register failed", {
-        position: "top-right",
-      });
+      toast.error("Register failed");
     }
   };
 
@@ -64,12 +69,25 @@ export default function RegisterForm() {
           <CardContent className="space-y-4 my-4">
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Username" {...field} />
+                    <Input type="text" placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
