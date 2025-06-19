@@ -49,13 +49,11 @@ public class PublicKeyController {
         }
     }
 
-    @PostMapping("/{keyId}/revoke")
+    @DeleteMapping("/{keyId}")
     public ResponseEntity<ApiResponse> revokePublicKey(
-            @PathVariable UUID keyId,
-            Authentication authentication) {
+            @PathVariable UUID keyId) {
         try {
-            User user = userService.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new IllegalStateException("Người dùng không tồn tại"));
+            User user = SecurityUtils.getCurrentUser();
 
             PublicKey publicKey = publicKeyService.findById(keyId)
                     .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
