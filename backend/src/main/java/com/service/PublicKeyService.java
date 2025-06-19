@@ -4,6 +4,7 @@ import com.model.PublicKey;
 import com.model.User;
 import com.repository.PublicKeyRepository;
 import com.util.KeyUtils;
+import com.dto.response.PublicKeyMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,5 +75,14 @@ public class PublicKeyService {
 
     public Optional<PublicKey> findByFingerprint(String fingerprint) {
         return publicKeyRepository.findByFingerprint(fingerprint);
+    }
+
+    public PublicKeyMetadata getPublicKeyMetadata(User user, LocalDateTime now) {
+        return PublicKeyMetadata.builder()
+            .total(publicKeyRepository.countByUser(user))
+            .active(publicKeyRepository.countActiveKeysByUser(user, now))
+            .revoked(publicKeyRepository.countRevokedKeysByUser(user))
+            .expired(publicKeyRepository.countExpiredKeysByUser(user, now))
+            .build();
     }
 } 

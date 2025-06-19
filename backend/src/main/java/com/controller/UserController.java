@@ -4,6 +4,7 @@ import com.dto.response.ApiResponse;
 import com.dto.response.ErrorResponse;
 import com.dto.response.UserResponse;
 import com.dto.response.PublicKeyResponse;
+import com.dto.response.PublicKeyMetadata;
 import com.service.UserService;
 import com.util.SecurityUtils;
 import com.model.User;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,8 +38,10 @@ public class UserController {
     public ResponseEntity<ApiResponse> getPublicKeys() {
         try {
             User user = SecurityUtils.getCurrentUser();
+            LocalDateTime now = LocalDateTime.now();
             List<PublicKey> publicKeys = publicKeyService.findByUser(user);
-            return ResponseEntity.ok(PublicKeyResponse.getSuccess(publicKeys));
+            PublicKeyMetadata metadata = publicKeyService.getPublicKeyMetadata(user, now);
+            return ResponseEntity.ok(PublicKeyResponse.getSuccess(publicKeys, metadata));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                 .body(ErrorResponse.badRequest(e.getMessage()));

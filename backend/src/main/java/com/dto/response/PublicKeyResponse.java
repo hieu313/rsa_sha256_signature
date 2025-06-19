@@ -9,6 +9,7 @@ import com.model.PublicKey;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
@@ -39,11 +40,19 @@ public class PublicKeyResponse {
         return SuccessResponse.of("Upload public key success", new PublicKeyResponse(publicKey));
     }
 
-    public static SuccessResponse<List<PublicKeyResponse>> getSuccess(List<PublicKey> publicKeys) {
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class PublicKeyListResponse {
+        private List<PublicKeyResponse> keys;
+        private PublicKeyMetadata meta;
+    }
+
+    public static SuccessResponse<PublicKeyListResponse> getSuccess(List<PublicKey> publicKeys, PublicKeyMetadata metadata) {
         List<PublicKeyResponse> responses = publicKeys.stream()
                 .map(PublicKeyResponse::new)
                 .collect(Collectors.toList());
-        return SuccessResponse.of("Get public keys success", responses);
+        return SuccessResponse.of("Get public keys success", new PublicKeyListResponse(responses, metadata));
     }
 
     public static SuccessResponse<PublicKeyResponse> revokeSuccess(PublicKey publicKey) {
