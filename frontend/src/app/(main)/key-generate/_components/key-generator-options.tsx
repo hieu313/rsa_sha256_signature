@@ -65,14 +65,14 @@ export default function KeyGeneratorOptions({
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3072" id="r-3072" disabled />
-              <Label htmlFor="r-3072" className="font-normal text-gray-500">
+              <RadioGroupItem value="3072" id="r-3072" />
+              <Label htmlFor="r-3072" className="font-normal">
                 3072 bits
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="4096" id="r-4096" disabled />
-              <Label htmlFor="r-4096" className="font-normal text-gray-500">
+              <RadioGroupItem value="4096" id="r-4096" />
+              <Label htmlFor="r-4096" className="font-normal">
                 4096 bits (Mạnh nhất)
               </Label>
             </div>

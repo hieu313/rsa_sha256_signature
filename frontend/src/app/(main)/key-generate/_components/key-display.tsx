@@ -106,7 +106,9 @@ export default function KeyDisplay({
           <TabsContent value="private" className="space-y-4 mt-4">
             <div className="relative">
               <Textarea
-                placeholder="Private key đã được tải xuống tự động khi tạo khóa"
+                placeholder={
+                  isGenerated ? "" : "Private key sẽ được tải xuống tự động"
+                }
                 className="font-mono text-xs h-48 resize-none bg-gray-100 cursor-not-allowed"
                 readOnly
                 value=""

@@ -1,4 +1,6 @@
+import { AUTH_COOKIE_NAME } from "@/constants/auth.constant";
 import { clsx, type ClassValue } from "clsx";
+import Cookies from "js-cookie";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -36,3 +38,5 @@ export function changeToSlug(title: string) {
 
   return slug;
 }
+
+export const checkAuthClient = () => Boolean(Cookies.get(AUTH_COOKIE_NAME));

@@ -1,11 +1,14 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import http from "@/lib/http";
+import {
+  ActivePublicKeyResponse,
+  PublicKeyResponse,
+  PublicKeyUploadBody,
+} from "@/types/key.type";
 
 export const publicKeyService = {
-  uploadPublicKey: async (publicKeyPem: string, keyAlias: string) =>
-    await http
-      .post(API_ROUTES.PUBLIC_KEY.UPLOAD, { publicKeyPem, keyAlias })
-      .then((res) => res.data),
+  uploadPublicKey: async (body: PublicKeyUploadBody) =>
+    await http.post(API_ROUTES.PUBLIC_KEY.UPLOAD, body).then((res) => res.data),
   deletePublicKey: async (keyId: string) =>
     await http
       .delete(API_ROUTES.PUBLIC_KEY.DELETE(keyId))

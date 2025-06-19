@@ -33,6 +33,7 @@ export const publicKeySchema = z
         { message: "Nội dung public key PEM không hợp lệ" }
       ),
     keyAlias: z.string().min(1, { message: "Vui lòng nhập tên key" }),
+    keySize: z.number().min(1, { message: "Vui lòng chọn kích thước key" }),
   })
   .superRefine((data, ctx) => {
     if (data.publicKeyPem.length > 1024) {

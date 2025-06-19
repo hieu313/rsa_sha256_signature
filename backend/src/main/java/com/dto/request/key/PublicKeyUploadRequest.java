@@ -15,4 +15,5 @@ public class PublicKeyUploadRequest {
     private String publicKeyPem;
     private String keyAlias;
     private LocalDateTime expiresAt;
+    private int keySize;
 }

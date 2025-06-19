@@ -1,21 +1,24 @@
 "use client";
 
 import { RsaHelper } from "@/lib/rsa";
-import { changeToSlug } from "@/lib/utils";
+import { changeToSlug, checkAuthClient } from "@/lib/utils";
 import { publicKeyService } from "@/services/public-key-service";
 import { useState } from "react";
 import { toast } from "sonner";
+import GenerateGuestKey from "./_components/generate-guest-key";
 import KeyDisplay from "./_components/key-display";
 import KeyGeneratorOptions from "./_components/key-generator-options";
 import RsaInformative from "./_components/rsa-informative";
 
 export default function KeyGeneratePage() {
+  const isAuthenticated = checkAuthClient();
   const [keySize, setKeySize] = useState("2048");
   const [keyFormat, setKeyFormat] = useState("pem");
   const [keyAlias, setKeyAlias] = useState("my-rsa-key");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [showGuestDialog, setShowGuestDialog] = useState(false);
 
   const downloadPrivateKey = (privateKey: string) => {
     const blob = new Blob([privateKey], { type: "text/plain" });
@@ -29,34 +32,55 @@ export default function KeyGeneratePage() {
     document.body.removeChild(a);
   };
 
-  const handleGenerateKey = async () => {
+  const generateSuccess = () => {
+    setIsGenerating(false);
+    setIsGenerated(true);
+    toast.success(
+      "Khóa RSA đã được tạo thành công. Private key đã được tải xuống."
+    );
+  };
+
+  const generateError = (message: string) => {
+    setIsGenerating(false);
+    setIsGenerated(false);
+    toast.error(message);
+  };
+
+  const generateKeyPair = async () => {
     setIsGenerating(true);
     const keyPair = await RsaHelper.generateKeyPair(Number(keySize));
     setPublicKey(keyPair.publicKey);
-    // Tải xuống private key ngay lập tức và không lưu vào state
     downloadPrivateKey(keyPair.privateKey);
     try {
-      const response = await publicKeyService.uploadPublicKey(
-        keyPair.publicKey,
-        keyAlias
-      );
-      if (response.success) {
-        setIsGenerating(false);
-        setIsGenerated(true);
-        toast.success(
-          "Khóa RSA đã được tạo thành công. Private key đã được tải xuống."
-        );
-      } else {
-        setIsGenerating(false);
-        setIsGenerated(false);
-        toast.error(response.message);
+      if (isAuthenticated) {
+        const response = await publicKeyService.uploadPublicKey({
+          publicKeyPem: keyPair.publicKey,
+          keyAlias,
+          keySize: Number(keySize),
+        });
+        if (!response.success) {
+          generateError(response.message);
+          return;
+        }
       }
+      generateSuccess();
     } catch (error) {
       console.log(error);
-      setIsGenerating(false);
-      setIsGenerated(false);
-      toast.error("Lỗi khi tạo khóa RSA");
+      generateError("Lỗi khi tạo khóa RSA");
     }
+  };
+
+  const handleGenerateKey = async () => {
+    if (!isAuthenticated) {
+      setShowGuestDialog(true);
+      return;
+    }
+    await generateKeyPair();
+  };
+
+  const handleGuestGenerate = async () => {
+    setShowGuestDialog(false);
+    await generateKeyPair();
   };
 
   return (
@@ -84,6 +108,12 @@ export default function KeyGeneratePage() {
           publicKey={publicKey}
         />
       </div>
+      <GenerateGuestKey
+        isOpen={showGuestDialog}
+        onClose={() => setShowGuestDialog(false)}
+        isGenerating={isGenerating}
+        handleGenerateKey={handleGuestGenerate}
+      />
       <RsaInformative />
     </div>
   );

@@ -21,53 +21,54 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/public-keys")
 public class PublicKeyController {
-    private final PublicKeyService publicKeyService;
-    private final UserService userService;
+  private final PublicKeyService publicKeyService;
+  private final UserService userService;
 
-    @Autowired
-    public PublicKeyController(PublicKeyService publicKeyService, UserService userService) {
-        this.publicKeyService = publicKeyService;
-        this.userService = userService;
+  @Autowired
+  public PublicKeyController(PublicKeyService publicKeyService, UserService userService) {
+    this.publicKeyService = publicKeyService;
+    this.userService = userService;
+  }
+
+  @PostMapping()
+  public ResponseEntity<ApiResponse> uploadPublicKey(
+      @RequestBody PublicKeyUploadRequest request) {
+    try {
+      User user = SecurityUtils.getCurrentUser();
+      PublicKey publicKey = publicKeyService.addPublicKey(
+          user,
+          request.getPublicKeyPem(),
+          request.getKeyAlias(),
+          request.getExpiresAt(),
+          request.getKeySize()
+      );
+
+      return ResponseEntity.ok(PublicKeyResponse.uploadSuccess(publicKey));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(ErrorResponse.badRequest(e.getMessage()));
     }
+  }
 
-    @PostMapping()
-    public ResponseEntity<ApiResponse> uploadPublicKey(
-        @RequestBody PublicKeyUploadRequest request) {
-        try {
-            User user = SecurityUtils.getCurrentUser();
-            PublicKey publicKey = publicKeyService.addPublicKey(
-                    user,
-                    request.getPublicKeyPem(),
-                    request.getKeyAlias(),
-                    request.getExpiresAt()
-            );
+  @DeleteMapping("/{keyId}")
+  public ResponseEntity<ApiResponse> revokePublicKey(
+      @PathVariable UUID keyId) {
+    try {
+      User user = SecurityUtils.getCurrentUser();
 
-            return ResponseEntity.ok(PublicKeyResponse.uploadSuccess(publicKey));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                .body(ErrorResponse.badRequest(e.getMessage()));
-        }
+      PublicKey publicKey = publicKeyService.findById(keyId)
+          .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
+
+      if (!publicKey.getUser().getId().equals(user.getId())) {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.badRequest("Không có quyền thu hồi public key này"));
+      }
+
+      PublicKey revokedKey = publicKeyService.revokeKey(publicKey, LocalDateTime.now());
+      return ResponseEntity.ok(PublicKeyResponse.revokeSuccess(revokedKey));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(ErrorResponse.badRequest(e.getMessage()));
     }
-
-    @DeleteMapping("/{keyId}")
-    public ResponseEntity<ApiResponse> revokePublicKey(
-            @PathVariable UUID keyId) {
-        try {
-            User user = SecurityUtils.getCurrentUser();
-
-            PublicKey publicKey = publicKeyService.findById(keyId)
-                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
-
-            if (!publicKey.getUser().getId().equals(user.getId())) {
-                return ResponseEntity.badRequest()
-                    .body(ErrorResponse.badRequest("Không có quyền thu hồi public key này"));
-            }
-
-            PublicKey revokedKey = publicKeyService.revokeKey(publicKey, LocalDateTime.now());
-            return ResponseEntity.ok(PublicKeyResponse.revokeSuccess(revokedKey));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                .body(ErrorResponse.badRequest(e.getMessage()));
-        }
-    }
+  }
 }
