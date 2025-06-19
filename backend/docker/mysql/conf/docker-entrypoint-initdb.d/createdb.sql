@@ -30,7 +30,6 @@ CREATE TABLE public_keys (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NULL,
     INDEX idx_user_id (user_id),
-    UNIQUE INDEX idx_user_default (user_id, is_default),
     INDEX idx_fingerprint (fingerprint),
     INDEX idx_revoked_expires (is_revoked, expires_at),
     INDEX idx_created_at (created_at),
