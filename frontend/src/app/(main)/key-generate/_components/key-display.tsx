@@ -1,3 +1,5 @@
+"use client";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,13 +11,36 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { changeToSlug } from "@/lib/utils";
 import { Copy, Download, Info, Lock, Shield, Unlock } from "lucide-react";
+import { toast } from "sonner";
 
 interface KeyDisplayProps {
   isGenerated: boolean;
+  keyAlias: string;
+  publicKey: string | null;
 }
 
-export default function KeyDisplay({ isGenerated }: KeyDisplayProps) {
+export default function KeyDisplay({
+  isGenerated,
+  keyAlias,
+  publicKey,
+}: KeyDisplayProps) {
+  const downloadKey = (key: string) => {
+    const blob = new Blob([key], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${changeToSlug(keyAlias)}-rsa-public-key.pem`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+  const copyKey = (key: string) => {
+    navigator.clipboard.writeText(key);
+    toast.success("Đã sao chép khóa công khai");
+  };
   return (
     <Card className="md:col-span-2">
       <CardHeader>
@@ -47,30 +72,26 @@ export default function KeyDisplay({ isGenerated }: KeyDisplayProps) {
                 }
                 className="font-mono text-xs h-48 resize-none bg-gray-100 cursor-not-allowed"
                 readOnly
+                value={isGenerated ? publicKey || "" : ""}
               />
-              {isGenerated && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-                  <div className="text-center space-y-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                      <Unlock className="w-8 h-8 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-medium">Public Key</p>
-                      <p className="text-sm text-gray-500">
-                        Khóa công khai của bạn đã được tạo
-                      </p>
-                    </div>
-                    <div className="flex gap-2 justify-center">
-                      <Button size="sm" variant="outline">
-                        <Copy className="w-4 h-4 mr-1" />
-                        Sao chép
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4 mr-1" />
-                        Tải xuống
-                      </Button>
-                    </div>
-                  </div>
+              {isGenerated && publicKey && (
+                <div className="flex gap-2 justify-center mt-4">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => copyKey(publicKey)}
+                  >
+                    <Copy className="w-4 h-4 mr-1" />
+                    Sao chép
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => downloadKey(publicKey)}
+                  >
+                    <Download className="w-4 h-4 mr-1" />
+                    Tải xuống
+                  </Button>
                 </div>
               )}
             </div>
@@ -85,11 +106,10 @@ export default function KeyDisplay({ isGenerated }: KeyDisplayProps) {
           <TabsContent value="private" className="space-y-4 mt-4">
             <div className="relative">
               <Textarea
-                placeholder={
-                  isGenerated ? "" : "Private key sẽ hiển thị ở đây..."
-                }
+                placeholder="Private key đã được tải xuống tự động khi tạo khóa"
                 className="font-mono text-xs h-48 resize-none bg-gray-100 cursor-not-allowed"
                 readOnly
+                value=""
               />
               {isGenerated && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/80">
@@ -100,18 +120,8 @@ export default function KeyDisplay({ isGenerated }: KeyDisplayProps) {
                     <div>
                       <p className="text-lg font-medium">Private Key</p>
                       <p className="text-sm text-gray-500">
-                        Khóa riêng tư của bạn đã được tạo
+                        Private key đã được tải xuống tự động khi tạo khóa
                       </p>
-                    </div>
-                    <div className="flex gap-2 justify-center">
-                      <Button size="sm" variant="outline">
-                        <Copy className="w-4 h-4 mr-1" />
-                        Sao chép
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4 mr-1" />
-                        Tải xuống
-                      </Button>
                     </div>
                   </div>
                 </div>

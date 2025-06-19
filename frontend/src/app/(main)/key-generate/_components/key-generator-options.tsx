@@ -20,6 +20,8 @@ import {
 import { Key } from "lucide-react";
 
 interface KeyGeneratorOptionsProps {
+  keyAlias: string;
+  setKeyAlias: (alias: string) => void;
   keySize: string;
   setKeySize: (size: string) => void;
   keyFormat: string;
@@ -29,6 +31,8 @@ interface KeyGeneratorOptionsProps {
 }
 
 export default function KeyGeneratorOptions({
+  keyAlias,
+  setKeyAlias,
   keySize,
   setKeySize,
   keyFormat,
@@ -89,7 +93,12 @@ export default function KeyGeneratorOptions({
 
         <div className="space-y-2">
           <Label htmlFor="key-name">Tên khóa (tùy chọn)</Label>
-          <Input id="key-name" placeholder="my-rsa-key" />
+          <Input
+            id="key-name"
+            placeholder="my-rsa-key"
+            value={keyAlias}
+            onChange={(e) => setKeyAlias(e.target.value)}
+          />
         </div>
       </CardContent>
       <CardFooter>
