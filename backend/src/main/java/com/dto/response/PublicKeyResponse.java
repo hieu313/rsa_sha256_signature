@@ -18,6 +18,8 @@ public class PublicKeyResponse {
     private String keyAlias;
     private String publicKeyPem;
     private String fingerprint;
+    private int keySize;
+    private int keyUsage;
     private LocalDateTime revokedAt;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
@@ -29,6 +31,8 @@ public class PublicKeyResponse {
         this.keyAlias = publicKey.getKeyAlias();
         this.publicKeyPem = publicKey.getPublicKeyPem();
         this.fingerprint = publicKey.getFingerprint();
+        this.keySize = publicKey.getKeySize();
+        this.keyUsage = publicKey.getKeyUsage();
         this.revokedAt = publicKey.getRevokedAt();
         this.createdAt = publicKey.getCreatedAt();
         this.expiresAt = publicKey.getExpiresAt();
@@ -57,5 +61,12 @@ public class PublicKeyResponse {
 
     public static SuccessResponse<PublicKeyResponse> revokeSuccess(PublicKey publicKey) {
         return SuccessResponse.of("Revoke public key success", new PublicKeyResponse(publicKey));
+    }
+
+    public static SuccessResponse<List<PublicKeyResponse>> searchSuccess(List<PublicKey> publicKeys) {
+        List<PublicKeyResponse> responses = publicKeys.stream()
+                .map(PublicKeyResponse::new)
+                .collect(Collectors.toList());
+        return SuccessResponse.of("Search public keys success", responses);
     }
 }

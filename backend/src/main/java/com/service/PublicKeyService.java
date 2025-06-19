@@ -6,6 +6,7 @@ import com.repository.PublicKeyRepository;
 import com.util.KeyUtils;
 import com.dto.response.PublicKeyMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +85,13 @@ public class PublicKeyService {
             .revoked(publicKeyRepository.countRevokedKeysByUser(user))
             .expired(publicKeyRepository.countExpiredKeysByUser(user, now))
             .build();
+    }
+
+    public List<PublicKey> searchActiveKeysByAlias(User user, String keyAlias) {
+        return publicKeyRepository.searchActiveKeysByAlias(user, LocalDateTime.now(), keyAlias);
+    }
+
+    public List<PublicKey> findActiveKeysWithLimit(User user, int limit) {
+        return publicKeyRepository.findActiveKeysWithLimit(user, LocalDateTime.now(), PageRequest.of(0, limit));
     }
 } 

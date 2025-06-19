@@ -30,6 +30,12 @@ public class PublicKey {
     @Column(nullable = false, unique = true, length = 255)
     private String fingerprint;
 
+    @Column(name = "key_size", nullable = false)
+    private int keySize;
+
+    @Column(name = "key_usage", nullable = false, columnDefinition = "INT NOT NULL DEFAULT 0")
+    private int keyUsage;
+
     @Column(name = "is_default", nullable = false)
     private boolean isDefault = false;
 

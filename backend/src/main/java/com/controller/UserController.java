@@ -47,4 +47,23 @@ public class UserController {
                 .body(ErrorResponse.badRequest(e.getMessage()));
         }
     }
+
+    @GetMapping("/me/public-keys/active")
+    public ResponseEntity<ApiResponse> getActivePublicKey(@RequestParam(required = false) String keyAlias) {
+        try {
+            User user = SecurityUtils.getCurrentUser();
+            List<PublicKey> publicKeys;
+            
+            if (keyAlias != null && !keyAlias.trim().isEmpty()) {
+                publicKeys = publicKeyService.searchActiveKeysByAlias(user, keyAlias);
+            } else {
+                publicKeys = publicKeyService.findActiveKeysWithLimit(user, 10);
+            }
+            
+            return ResponseEntity.ok(PublicKeyResponse.searchSuccess(publicKeys));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                .body(ErrorResponse.badRequest(e.getMessage()));
+        }
+    }
 }

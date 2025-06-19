@@ -24,6 +24,8 @@ CREATE TABLE public_keys (
     key_alias VARCHAR(255),
     public_key_pem TEXT NOT NULL,
     fingerprint VARCHAR(255) NOT NULL UNIQUE,
+    key_size INT NOT NULL,
+    key_usage INT NOT NULL DEFAULT 0,
     is_default BOOLEAN DEFAULT FALSE,
     is_revoked BOOLEAN DEFAULT FALSE,
     revoked_at TIMESTAMP NULL,
