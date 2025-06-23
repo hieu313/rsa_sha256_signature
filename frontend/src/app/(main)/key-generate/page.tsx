@@ -21,6 +21,7 @@ export default function KeyGeneratePage() {
   const [showGuestDialog, setShowGuestDialog] = useState(false);
 
   const downloadPrivateKey = (privateKey: string) => {
+    toast.success("Private key đã được tải xuống.");
     const blob = new Blob([privateKey], { type: "text/plain" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -35,9 +36,6 @@ export default function KeyGeneratePage() {
   const generateSuccess = () => {
     setIsGenerating(false);
     setIsGenerated(true);
-    toast.success(
-      "Khóa RSA đã được tạo thành công. Private key đã được tải xuống."
-    );
   };
 
   const generateError = (message: string) => {
@@ -49,6 +47,7 @@ export default function KeyGeneratePage() {
   const generateKeyPair = async () => {
     setIsGenerating(true);
     const keyPair = await RsaHelper.generateKeyPair(Number(keySize));
+    toast.success("Khóa RSA đã được tạo thành công.");
     setPublicKey(keyPair.publicKey);
     downloadPrivateKey(keyPair.privateKey);
     try {
@@ -62,6 +61,7 @@ export default function KeyGeneratePage() {
           generateError(response.message);
           return;
         }
+        toast.success("Khóa RSA công khai đã được tải lên thành công.");
       }
       generateSuccess();
     } catch (error) {
