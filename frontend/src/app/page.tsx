@@ -6,8 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AUTH_COOKIE_NAME } from "@/constants/auth.constant";
 import { ROUTES } from "@/constants/routes";
 import { ArrowRight, FileSignature, Key, Shield } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 const features = [
@@ -34,7 +36,10 @@ const features = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  const isAuthenticated = cookieStore.get(AUTH_COOKIE_NAME)?.value !== null;
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 mt-10">
       {/* Hero Section */}
@@ -47,17 +52,19 @@ export default function HomePage() {
           điệp một cách an toàn
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <Link href={ROUTES.KEY_GENERATE}>
+          <Link href={isAuthenticated ? ROUTES.KEY_GENERATE : ROUTES.LOGIN}>
             <Button size="lg" className="w-full sm:w-auto">
               Bắt đầu ngay
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
-          <Link href={ROUTES.LOGIN}>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              Đăng nhập
-            </Button>
-          </Link>
+          {!isAuthenticated && (
+            <Link href={ROUTES.LOGIN}>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                Đăng nhập
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 
