@@ -95,4 +95,9 @@ public class PublicKeyService {
   public List<PublicKey> findActiveKeysWithLimit(User user, int limit) {
     return publicKeyRepository.findActiveKeysWithLimit(user, LocalDateTime.now(), PageRequest.of(0, limit));
   }
+
+  public PublicKey getPublicKeyById(UUID id) {
+    return publicKeyRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
+  }
 } 

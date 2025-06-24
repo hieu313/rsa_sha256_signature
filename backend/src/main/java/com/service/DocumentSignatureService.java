@@ -95,4 +95,13 @@ public class DocumentSignatureService {
 
         return documentSignatureRepository.save(signature);
     }
+
+    public DocumentSignature getSignatureById(UUID id) {
+        return documentSignatureRepository.findById(id)
+            .orElse(null);
+    }
+
+    public DocumentSignature saveSignature(DocumentSignature signature) {
+        return documentSignatureRepository.save(signature);
+    }
 } 
