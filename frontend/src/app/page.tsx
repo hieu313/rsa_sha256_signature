@@ -15,7 +15,7 @@ import Link from "next/link";
 const features = [
   {
     title: "Tạo cặp khóa RSA",
-    description: "Tạo cặp khóa RSA 2048-bit an toàn với thuật toán RSA-PSS",
+    description: "Tạo cặp khóa RSA 2048-bit an toàn với thuật toán RSA",
     icon: Key,
     href: ROUTES.KEY_GENERATE,
     color: "bg-blue-500",
@@ -135,7 +135,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Thuật toán:</span>
-                <span className="font-medium">RSA-PSS</span>
+                <span className="font-medium">RSA</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Hash function:</span>

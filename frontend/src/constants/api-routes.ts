@@ -16,4 +16,7 @@ export const API_ROUTES = {
     CONTENT: `/sign/create-document`,
     VERIFY: `/sign/verify-signature`,
   },
+  VERIFY: {
+    CONTENT: `/verify`,
+  },
 };

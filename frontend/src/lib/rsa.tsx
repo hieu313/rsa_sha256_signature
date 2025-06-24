@@ -3,14 +3,16 @@ export class RsaHelper {
   static END_PRIVATE_KEY = "-----END PRIVATE KEY-----";
   static BEGIN_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----";
   static END_PUBLIC_KEY = "-----END PUBLIC KEY-----";
+  static HASH_ALGORITHM = "SHA-256";
+  static SIGNATURE_ALGORITHM = "RSASSA-PKCS1-v1_5";
 
   static async generateKeyPair(modulusLength: number = 2048) {
     const keyPair = await window.crypto.subtle.generateKey(
       {
-        name: "RSA-PSS",
+        name: RsaHelper.SIGNATURE_ALGORITHM,
         modulusLength: modulusLength,
         publicExponent: new Uint8Array([1, 0, 1]), // 65537
-        hash: "SHA-256",
+        hash: RsaHelper.HASH_ALGORITHM,
       },
       true, // extractable
       ["sign", "verify"]
@@ -63,8 +65,8 @@ export class RsaHelper {
         "pkcs8",
         der,
         {
-          name: "RSASSA-PKCS1-v1_5",
-          hash: { name: "SHA-256" },
+          name: RsaHelper.SIGNATURE_ALGORITHM,
+          hash: { name: RsaHelper.HASH_ALGORITHM },
         },
         false,
         ["sign"]
@@ -77,7 +79,7 @@ export class RsaHelper {
       // Sign the hash with RSASSA-PKCS1-v1_5
       const signature = await window.crypto.subtle.sign(
         {
-          name: "RSASSA-PKCS1-v1_5",
+          name: RsaHelper.SIGNATURE_ALGORITHM,
         },
         privateKey,
         hashBuffer
