@@ -21,7 +21,6 @@ export default function KeyGeneratePage() {
   const [showGuestDialog, setShowGuestDialog] = useState(false);
 
   const downloadPrivateKey = (privateKey: string) => {
-    toast.success("Private key đã được tải xuống.");
     const blob = new Blob([privateKey], { type: "text/plain" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -31,6 +30,12 @@ export default function KeyGeneratePage() {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    toast.success("Private key đã được tải xuống.");
+  };
+
+  const copyPrivateKey = (privateKey: string) => {
+    navigator.clipboard.writeText(privateKey);
+    toast.success("Private key đã được sao chép.");
   };
 
   const generateSuccess = () => {
@@ -50,6 +55,7 @@ export default function KeyGeneratePage() {
     toast.success("Khóa RSA đã được tạo thành công.");
     setPublicKey(keyPair.publicKey);
     downloadPrivateKey(keyPair.privateKey);
+    copyPrivateKey(keyPair.privateKey);
     try {
       if (isAuthenticated) {
         const response = await publicKeyService.uploadPublicKey({

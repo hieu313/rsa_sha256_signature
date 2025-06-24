@@ -6,9 +6,14 @@ export const API_ROUTES = {
   USER: {
     ME: `/users/me`,
     PUBLIC_KEYS: `/users/me/public-keys`,
+    ACTIVE_PUBLIC_KEYS: `/users/me/public-keys/active`,
   },
   PUBLIC_KEY: {
     UPLOAD: `/public-keys`,
     DELETE: (keyId: string) => `/public-keys/${keyId}`,
+  },
+  SIGN: {
+    CONTENT: `/sign/create-document`,
+    VERIFY: `/sign/verify-signature`,
   },
 };

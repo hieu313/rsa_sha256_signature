@@ -1,4 +1,4 @@
-package com.dto.request;
+package com.dto.request.sign;
 
 import lombok.Getter;
 import lombok.Setter;

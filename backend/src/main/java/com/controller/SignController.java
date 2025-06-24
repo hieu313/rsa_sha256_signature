@@ -1,7 +1,7 @@
 package com.controller;
 
-import com.dto.request.CreateDocumentRequest;
-import com.dto.request.VerifySignatureRequest;
+import com.dto.request.sign.CreateDocumentRequest;
+import com.dto.request.sign.VerifySignatureRequest;
 import com.dto.response.ApiResponse;
 import com.dto.response.CreateDocumentResponse;
 import com.dto.response.ErrorResponse;
@@ -12,10 +12,10 @@ import com.model.PublicKey;
 import com.model.User;
 import com.service.DocumentService;
 import com.service.DocumentSignatureService;
-import com.service.SignatureService;
 import com.service.PublicKeyService;
 import com.util.SecurityUtils;
 import com.util.KeyUtils;
+import com.util.RSAUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,6 @@ import java.util.Base64;
 public class SignController {
     private final DocumentService documentService;
     private final DocumentSignatureService documentSignatureService;
-    private final SignatureService signatureService;
     private final PublicKeyService publicKeyService;
 
     @PostMapping(value = "/create-document", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -116,7 +115,7 @@ public class SignController {
             java.security.PublicKey publicKey = KeyUtils.convertPemToPublicKey(publicKeyEntity.getPublicKeyPem());
 
             // Xác thực chữ ký
-            boolean isValid = signatureService.verifySignature(
+            boolean isValid = RSAUtil.verify(
                 request.getHashValue(),
                 request.getSignValue(),
                 publicKey
@@ -130,7 +129,7 @@ public class SignController {
             // Cập nhật signature
             signature.setStatus(DocumentSignature.DocumentSignatureStatus.completed);
             signature.setSignatureValue(request.getSignValue());
-            signature.setSignatureTimestamp(LocalDateTime.parse(request.getSignTimestamp()));
+            signature.setSignatureTimestamp(LocalDateTime.parse(request.getSignTimestamp().replace("Z", "")));
             signature.setSigningKey(publicKeyEntity);
             signature.setValid(true);
             documentSignatureService.saveSignature(signature);

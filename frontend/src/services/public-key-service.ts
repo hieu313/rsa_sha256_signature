@@ -14,5 +14,15 @@ export const publicKeyService = {
       .delete(API_ROUTES.PUBLIC_KEY.DELETE(keyId))
       .then((res) => res.data),
   getPublicKeys: async () =>
-    await http.get(API_ROUTES.USER.PUBLIC_KEYS).then((res) => res.data),
+    await http
+      .get<PublicKeyResponse>(API_ROUTES.USER.PUBLIC_KEYS)
+      .then((res) => res.data),
+  getActivePublicKeys: async (keyAlias?: string) =>
+    await http
+      .get<ActivePublicKeyResponse>(API_ROUTES.USER.ACTIVE_PUBLIC_KEYS, {
+        params: {
+          keyAlias: keyAlias || undefined,
+        },
+      })
+      .then((res) => res.data),
 };
