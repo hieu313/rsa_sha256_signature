@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, UUID> {
     Page<Document> findByUser(User user, Pageable pageable);
-    Page<Document> findByUserAndStatus(User user, String status, Pageable pageable);
     Optional<Document> findByOriginalHash(byte[] originalHash);
     boolean existsByOriginalHash(byte[] originalHash);
 } 

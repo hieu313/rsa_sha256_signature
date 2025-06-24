@@ -8,6 +8,7 @@ import com.repository.DocumentSignatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +82,17 @@ public class DocumentSignatureService {
                                                  String validationDetails) {
         signature.setValid(isValid);
         signature.setValidationDetails(validationDetails);
+        return documentSignatureRepository.save(signature);
+    }
+
+    public DocumentSignature createPendingSignature(Document document, User signer) {
+        DocumentSignature signature = new DocumentSignature();
+        signature.setDocument(document);
+        signature.setSigner(signer);
+        signature.setStatus(DocumentSignature.DocumentSignatureStatus.pending);
+        signature.setValid(false);
+        signature.setDocumentHash(document.getOriginalHash());
+
         return documentSignatureRepository.save(signature);
     }
 } 

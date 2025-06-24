@@ -42,32 +42,32 @@ CREATE TABLE public_keys (
 CREATE TABLE documents (
     id BINARY(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
     user_id BINARY(16) NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
+    document_type ENUM('file', 'text') NOT NULL,
+    file_name VARCHAR(255),
     file_path TEXT,
-    original_hash BINARY(32) NOT NULL UNIQUE,
+    text_content TEXT,
+    original_hash BINARY(32) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'pending',
-    INDEX idx_user_status (user_id, status),
     INDEX idx_created_at (created_at),
+    INDEX idx_document_type (document_type),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Bảng document_signatures
 CREATE TABLE document_signatures (
     id BINARY(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+    status ENUM('pending', 'completed', 'expired', 'cancelled') DEFAULT 'pending',
     document_id BINARY(16) NOT NULL,
-    signer_id BINARY(16) NOT NULL,
-    signing_key_id BINARY(16) NOT NULL,
-    document_hash BINARY(32) NOT NULL,
-    signature_value TEXT NOT NULL,
+    signer_id BINARY(16),
+    signing_key_id BINARY(16),
+    document_hash BINARY(32),
+    signature_value TEXT,
     signature_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_valid BOOLEAN NOT NULL,
     validation_details JSON,
-    INDEX idx_document_id (document_id),
     INDEX idx_document_valid (document_id, is_valid),
     INDEX idx_signer_id (signer_id),
     INDEX idx_signing_key_id (signing_key_id),
-    INDEX idx_signature_timestamp (signature_timestamp),
     FOREIGN KEY (document_id) REFERENCES documents(id),
     FOREIGN KEY (signer_id) REFERENCES users(id),
     FOREIGN KEY (signing_key_id) REFERENCES public_keys(id)

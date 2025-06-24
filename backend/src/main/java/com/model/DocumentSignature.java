@@ -19,6 +19,10 @@ public class DocumentSignature {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private DocumentSignatureStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", nullable = false)
     private Document document;
@@ -28,16 +32,16 @@ public class DocumentSignature {
     private User signer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "signing_key_id", nullable = false)
+    @JoinColumn(name = "signing_key_id")
     private PublicKey signingKey;
 
     @Column(name = "document_hash", nullable = false)
     private byte[] documentHash;
 
-    @Column(name = "signature_value", nullable = false, columnDefinition = "text")
+    @Column(name = "signature_value", columnDefinition = "text")
     private String signatureValue;
 
-    @Column(name = "signature_timestamp", nullable = false, updatable = false)
+    @Column(name = "signature_timestamp")
     private LocalDateTime signatureTimestamp;
 
     @Column(name = "is_valid", nullable = false)
@@ -49,6 +53,15 @@ public class DocumentSignature {
 
     @PrePersist
     protected void onCreate() {
-        signatureTimestamp = LocalDateTime.now();
+        if (status == DocumentSignatureStatus.completed) {
+            signatureTimestamp = LocalDateTime.now();
+        }
+    }
+
+    public enum DocumentSignatureStatus {
+        pending,
+        completed,
+        expired,
+        cancelled
     }
 } 
