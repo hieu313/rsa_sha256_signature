@@ -5,4 +5,6 @@ export const ROUTES = {
   KEY_GENERATE: "/key-generate",
   SIGN: "/sign",
   VERIFY: "/verify",
-}
+  PUBLIC_KEY: "/public-key",
+  SIGNATURE: "/signature",
+};

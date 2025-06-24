@@ -27,10 +27,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function LoginForm() {
+  const [, startTransition] = useTransition();
   const router = useRouter();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -48,8 +50,11 @@ export default function LoginForm() {
         Cookies.set(AUTH_COOKIE_NAME, response.data.token, {
           expires: AUTH_COOKIE_EXPIRES,
         });
-        toast.success("Login successful");
-        router.push(ROUTES.HOME);
+        startTransition(() => {
+          router.push(ROUTES.HOME);
+          router.refresh();
+          toast.success("Login successful");
+        });
       }
     } catch (error) {
       console.log(error);

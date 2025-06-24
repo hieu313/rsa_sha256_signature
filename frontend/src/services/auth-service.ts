@@ -3,6 +3,7 @@ import http from "@/lib/http";
 import {
   LoginFormData,
   LoginResponse,
+  ProfileResponse,
   RegisterFormData,
   RegisterResponse,
 } from "@/types/auth.type";
@@ -16,4 +17,6 @@ export const authService = {
     await http
       .post<RegisterResponse>(API_ROUTES.AUTH.REGISTER, data)
       .then((res) => res.data),
+  profile: async () =>
+    await http.get<ProfileResponse>(API_ROUTES.USER.ME).then((res) => res.data),
 };

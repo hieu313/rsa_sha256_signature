@@ -12,3 +12,11 @@ export type LoginResponse = SuccessResponse<{
 export type RegisterResponse = SuccessResponse<{
   token: string;
 }>;
+export type UserProfile = {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};
+export type ProfileResponse = SuccessResponse<UserProfile>;

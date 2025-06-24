@@ -27,11 +27,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const [, startTransition] = useTransition();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -50,8 +52,11 @@ export default function RegisterForm() {
         Cookies.set(AUTH_COOKIE_NAME, response.data.token, {
           expires: AUTH_COOKIE_EXPIRES,
         });
-        toast.success("Register successful");
-        router.push(ROUTES.HOME);
+        startTransition(() => {
+          router.push(ROUTES.HOME);
+          router.refresh();
+          toast.success("Register successful");
+        });
       }
     } catch (error) {
       console.log(error);
