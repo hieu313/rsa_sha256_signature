@@ -10,7 +10,7 @@ export const API_ROUTES = {
   },
   PUBLIC_KEY: {
     UPLOAD: `/public-keys`,
-    DELETE: (keyId: string) => `/public-keys/${keyId}`,
+    REVOKE: (keyId: string) => `/public-keys/${keyId}`,
   },
   SIGN: {
     CONTENT: `/sign/create-document`,

@@ -7,4 +7,5 @@ export const ROUTES = {
   VERIFY: "/verify",
   PUBLIC_KEY: "/public-key",
   SIGNATURE: "/signature",
+  PROFILE: "/profile",
 };

@@ -10,11 +10,13 @@ import { toast } from "sonner";
 interface PublicKeySelectorProps {
   onKeySelect: (key: PublicKey | null) => void;
   isAuthenticated: boolean;
+  setHasKey: (hasKey: boolean) => void;
 }
 
 export function PublicKeySelector({
   onKeySelect,
   isAuthenticated,
+  setHasKey,
 }: PublicKeySelectorProps) {
   const [selectedServerKey, setSelectedServerKey] = useState("");
   const [serverKeys, setServerKeys] = useState<PublicKey[]>([]);
@@ -23,7 +25,6 @@ export function PublicKeySelector({
   const debouncedSearch = useDebounce(searchKeyAlias, 300);
 
   const loadServerKeys = useCallback(async (keyAlias?: string) => {
-    console.log("isAuthenticated", isAuthenticated);
     if (!isAuthenticated) {
       return;
     }
@@ -31,6 +32,7 @@ export function PublicKeySelector({
     try {
       const response = await publicKeyService.getActivePublicKeys(keyAlias);
       setServerKeys(response.data);
+      setHasKey(response.data.length > 0);
     } catch (error) {
       console.log(error);
       toast.error("Lỗi khi tải public key. Vui lòng thử lại sau");
@@ -69,7 +71,7 @@ export function PublicKeySelector({
       onValueChange={handleServerKeySelect}
       onSearch={handleSearchKeys}
       onOpen={handleOpenCombobox}
-      placeholder="Chọn public key..."
+      placeholder="Chọn public key đang hoạt động..."
       isLoading={isLoadingKeys}
     />
   );

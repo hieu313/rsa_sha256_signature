@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { RsaHelper } from "@/lib/rsa";
-import { formatFileSize } from "@/lib/utils";
+import { formatDateTime, formatFileSize } from "@/lib/utils";
 import { signService } from "@/services/sign.service";
 import { PublicKey } from "@/types/key.type";
 import { DocumentType } from "@/types/sign.type";
@@ -36,6 +36,7 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import LoginDialog from "./login-dialog";
+import NoKeyDialog from "./no-key-dialog";
 import { PublicKeySelector } from "./public-key-selector";
 
 interface SignFormProps {
@@ -44,6 +45,8 @@ interface SignFormProps {
 
 export default function SignForm({ isAuth }: SignFormProps) {
   const MAX_TEXT_LENGTH = 1000;
+  const [hasKey, setHasKey] = useState(true);
+  const [showNoKeyDialog, setShowNoKeyDialog] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [signType, setSignType] = useState("text");
   const [textLength, setTextLength] = useState(0);
@@ -67,6 +70,12 @@ export default function SignForm({ isAuth }: SignFormProps) {
     }
   }, [isAuth]);
 
+  useEffect(() => {
+    if (!hasKey) {
+      setShowNoKeyDialog(true);
+    }
+  }, [hasKey]);
+
   const handleKeySelect = useCallback((key: PublicKey | null) => {
     setSelectedKeyInfo(key);
     if (key) {
@@ -88,6 +97,11 @@ export default function SignForm({ isAuth }: SignFormProps) {
   const handleSign = async () => {
     if (!isAuth) {
       setShowLoginDialog(true);
+      return;
+    }
+
+    if (!hasKey) {
+      setShowNoKeyDialog(true);
       return;
     }
 
@@ -361,6 +375,7 @@ export default function SignForm({ isAuth }: SignFormProps) {
                 <PublicKeySelector
                   onKeySelect={handleKeySelect}
                   isAuthenticated={isAuth}
+                  setHasKey={setHasKey}
                 />
 
                 {/* Selected Key Info */}
@@ -378,10 +393,7 @@ export default function SignForm({ isAuth }: SignFormProps) {
                       <div className="flex items-center gap-2 text-gray-600">
                         <Calendar className="w-3 h-3" />
                         <span>
-                          Tạo:{" "}
-                          {new Date(
-                            selectedKeyInfo.createdAt
-                          ).toLocaleDateString("vi-VN")}
+                          Tạo: {formatDateTime(selectedKeyInfo.createdAt)}
                         </span>
                       </div>
                       <div className="text-xs text-gray-500 font-mono">
@@ -580,6 +592,11 @@ export default function SignForm({ isAuth }: SignFormProps) {
       <LoginDialog
         isOpen={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}
+      />
+
+      <NoKeyDialog
+        isOpen={showNoKeyDialog}
+        onClose={() => setShowNoKeyDialog(false)}
       />
     </div>
   );

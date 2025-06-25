@@ -203,19 +203,19 @@ const UserDropdownMenu = ({ isAuth }: { isAuth: boolean }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/keys" className="flex items-center">
+          <Link href={ROUTES.PUBLIC_KEY} className="flex items-center">
             <Key className="mr-2 h-4 w-4" />
             <span>Quản lý khóa</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/signatures" className="flex items-center">
+          <Link href={ROUTES.SIGNATURE} className="flex items-center">
             <FileSignature className="mr-2 h-4 w-4" />
             <span>Quản lý chữ ký</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center">
+          <Link href={ROUTES.PROFILE} className="flex items-center">
             <Settings className="mr-2 h-4 w-4" />
             <span>Cài đặt tài khoản</span>
           </Link>

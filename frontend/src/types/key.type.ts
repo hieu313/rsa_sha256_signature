@@ -22,14 +22,14 @@ export type PublicKey = {
 };
 
 export type PublicKeyUploadBody = z.infer<typeof publicKeySchema>;
-
-export type PublicKeyResponse = SuccessResponse<{
+export type PublicKeyMeta = {
+  total: number;
+  active: number;
+  revoked: number;
+  expired: number;
+};
+export type PublicKeyListResponse = SuccessResponse<{
   keys: PublicKey[];
-  meta: {
-    total: number;
-    active: number;
-    revoked: number;
-    expired: number;
-  };
+  meta: PublicKeyMeta;
 }>;
 export type ActivePublicKeyResponse = SuccessResponse<PublicKey[]>;

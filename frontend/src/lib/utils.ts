@@ -1,5 +1,6 @@
 import { AUTH_COOKIE_NAME } from "@/constants/auth.constant";
 import { clsx, type ClassValue } from "clsx";
+import { format } from "date-fns";
 import Cookies from "js-cookie";
 import { twMerge } from "tailwind-merge";
 
@@ -49,4 +50,12 @@ export const formatFileSize = (bytes: number) => {
   return (
     Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   );
+};
+
+export const formatDateTime = (
+  date: string | Date | null,
+  formatType: string = "HH:mm dd/MM/yyyy"
+) => {
+  if (!date) return "N/A";
+  return format(new Date(date), formatType);
 };

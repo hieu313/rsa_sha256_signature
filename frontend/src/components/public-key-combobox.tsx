@@ -1,7 +1,7 @@
 "use client";
 
 import { useDebounce } from "@/hooks/use-debounce";
-import { Calendar, Check, ChevronsUpDown, User } from "lucide-react";
+import { Calendar, Check, ChevronsUpDown, Key } from "lucide-react";
 import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, formatDateTime } from "@/lib/utils";
 import { PublicKey } from "@/types/key.type";
 
 interface PublicKeyComboboxProps {
@@ -74,7 +74,7 @@ export function PublicKeyCombobox({
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {selectedKey ? (
               <>
-                <User className="w-4 h-4 flex-shrink-0" />
+                <Key className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">{selectedKey.keyAlias}</span>
                 <Badge variant="outline" className="ml-auto flex-shrink-0">
                   {selectedKey.keySize} bit
@@ -111,7 +111,7 @@ export function PublicKeyCombobox({
                   className="flex flex-col items-start gap-1 p-3"
                 >
                   <div className="flex items-center gap-2 w-full">
-                    <User className="w-4 h-4 flex-shrink-0" />
+                    <Key className="w-4 h-4 flex-shrink-0" />
                     <span className="font-medium flex-1 truncate">
                       {key.keyAlias}
                     </span>
@@ -127,9 +127,7 @@ export function PublicKeyCombobox({
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground w-full">
                     <Calendar className="w-3 h-3" />
-                    <span>
-                      Tạo: {new Date(key.createdAt).toLocaleDateString("vi-VN")}
-                    </span>
+                    <span>Tạo: {formatDateTime(key.createdAt)}</span>
                   </div>
                 </CommandItem>
               ))}
