@@ -38,7 +38,8 @@ const features = [
 
 export default async function HomePage() {
   const cookieStore = await cookies();
-  const isAuthenticated = cookieStore.get(AUTH_COOKIE_NAME)?.value !== null;
+  const isAuthenticated =
+    cookieStore.get(AUTH_COOKIE_NAME)?.value !== undefined;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 mt-10">

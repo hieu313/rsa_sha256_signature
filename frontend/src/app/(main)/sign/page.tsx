@@ -5,7 +5,8 @@ import SignInfoCard from "./_components/sign-info-card";
 
 export default async function SignPage() {
   const cookieStore = await cookies();
-  const isAuthenticated = cookieStore.get(AUTH_COOKIE_NAME)?.value !== null;
+  const isAuthenticated =
+    cookieStore.get(AUTH_COOKIE_NAME)?.value !== undefined;
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="text-center space-y-2">
