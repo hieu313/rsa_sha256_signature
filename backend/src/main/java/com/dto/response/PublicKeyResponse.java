@@ -69,4 +69,8 @@ public class PublicKeyResponse {
                 .collect(Collectors.toList());
         return SuccessResponse.of("Search public keys success", responses);
     }
+
+    public static SuccessResponse<PublicKeyResponse> updateSuccess(PublicKey publicKey) {
+        return SuccessResponse.of("Update public key success", new PublicKeyResponse(publicKey));
+    }
 }

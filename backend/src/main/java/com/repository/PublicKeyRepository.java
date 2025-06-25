@@ -6,6 +6,7 @@ import com.dto.response.PublicKeyMetadata;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.UUID;
 import java.util.List;
@@ -45,4 +46,7 @@ public interface PublicKeyRepository extends JpaRepository<PublicKey, UUID> {
     @Query("SELECT pk FROM PublicKey pk WHERE pk.user = ?1 AND pk.isRevoked = false " +
            "AND (pk.expiresAt IS NULL OR pk.expiresAt > ?2)")
     List<PublicKey> findActiveKeysWithLimit(User user, LocalDateTime now, Pageable pageable);
+
+    @Query("SELECT COUNT(pk) FROM PublicKey pk WHERE pk.user = :user AND pk.isRevoked = false AND (pk.expiresAt IS NULL OR pk.expiresAt > :now)")
+    long countValidNonRevokedKeys(@Param("user") User user, @Param("now") LocalDateTime now);
 } 

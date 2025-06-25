@@ -100,4 +100,39 @@ public class PublicKeyService {
     return publicKeyRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
   }
+
+  @Transactional
+  public PublicKey updatePublicKey(PublicKey publicKey, String keyAlias, LocalDateTime expiresAt, boolean isDefault) {
+    // Cập nhật thông tin cơ bản
+    publicKey.setKeyAlias(keyAlias);
+    publicKey.setExpiresAt(expiresAt);
+
+    // Xử lý defaultKey
+    if (isDefault) {
+      if (!publicKey.isDefault()) {
+        // Nếu key này được set làm default, hủy default của key khác
+        Optional<PublicKey> existingDefaultKey = publicKeyRepository.findByUserAndIsDefaultTrue(publicKey.getUser());
+        existingDefaultKey.ifPresent(key -> {
+          if (!key.getId().equals(publicKey.getId())) {
+            key.setDefault(false);
+            publicKeyRepository.save(key);
+          }
+        });
+        publicKey.setDefault(true);
+      }
+      // Nếu key đã là default thì giữ nguyên
+    } else {
+      // Nếu muốn hủy default
+      if (publicKey.isDefault()) {
+        // Kiểm tra xem có key hợp lệ khác không
+        if (publicKeyRepository.countValidNonRevokedKeys(publicKey.getUser(), LocalDateTime.now()) > 1) {
+          publicKey.setDefault(false);
+        } else {
+          throw new IllegalArgumentException("Không thể hủy default key khi chỉ có một key hợp lệ");
+        }
+      }
+    }
+
+    return publicKeyRepository.save(publicKey);
+  }
 } 

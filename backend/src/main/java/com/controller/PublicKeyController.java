@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dto.request.key.PublicKeyUpdateRequest;
 import com.dto.request.key.PublicKeyUploadRequest;
 import com.dto.response.PublicKeyResponse;
 import com.dto.response.ApiResponse;
@@ -44,6 +45,33 @@ public class PublicKeyController {
       );
 
       return ResponseEntity.ok(PublicKeyResponse.uploadSuccess(publicKey));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(ErrorResponse.badRequest(e.getMessage()));
+    }
+  }
+
+  @PatchMapping("/{keyId}")
+  public ResponseEntity<ApiResponse> updatePublicKey(
+      @PathVariable UUID keyId,
+      @RequestBody PublicKeyUpdateRequest request) {
+    try {
+      User user = SecurityUtils.getCurrentUser();
+      PublicKey publicKey = publicKeyService.findById(keyId)
+          .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy public key"));
+
+      if (!publicKey.getUser().getId().equals(user.getId())) {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.badRequest("Không có quyền cập nhật public key này"));
+      }
+
+      PublicKey updatedKey = publicKeyService.updatePublicKey(
+          publicKey,
+          request.getKeyAlias(),
+          request.getExpiresAt(),
+          request.isDefault()
+      );
+      return ResponseEntity.ok(PublicKeyResponse.updateSuccess(updatedKey));
     } catch (Exception e) {
       return ResponseEntity.badRequest()
           .body(ErrorResponse.badRequest(e.getMessage()));
