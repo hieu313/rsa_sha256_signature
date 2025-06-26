@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, CheckCircle, Key, Lock, Shield } from "lucide-react";
+import { AlertTriangle, CheckCircle, Key, Shield } from "lucide-react";
 
 export default function SignInfoCard() {
   return (
@@ -93,25 +93,7 @@ export default function SignInfoCard() {
                 </div>
                 <div>
                   <strong>Mã hóa hash:</strong> Sử dụng private key để mã hóa
-                  hash
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                  <span className="text-xs font-medium text-blue-600">3</span>
-                </div>
-                <div>
-                  <strong>Tạo chữ ký:</strong> Hash đã mã hóa trở thành chữ ký
-                  điện tử
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                  <span className="text-xs font-medium text-blue-600">4</span>
-                </div>
-                <div>
-                  <strong>Xác minh:</strong> Sử dụng public key để xác minh chữ
-                  ký
+                  hash thành chữ ký điện tử
                 </div>
               </div>
             </div>
@@ -129,7 +111,7 @@ export default function SignInfoCard() {
             sau đó mã hóa hash này bằng private key của người ký.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <Card className="gap-0">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
@@ -153,22 +135,10 @@ export default function SignInfoCard() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  SHA-256 là hàm hash mật mã được sử dụng để tạo ra fingerprint
-                  256-bit duy nhất cho mỗi thông điệp.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="gap-0">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  Salt
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">
-                  Giá trị ngẫu nhiên được thêm vào để tăng cường bảo mật và
-                  chống tấn công
+                  SHA-256 là hàm hash mật mã được sử dụng để tạo ra một giá trị
+                  băm với độ dài 256-bit có tính chất gần như duy nhất cho mỗi
+                  thông điệp. Nó được thiết kế để rất khó tìm ra hai thông điệp
+                  khác nhau tạo ra cùng một giá trị băm
                 </p>
               </CardContent>
             </Card>
@@ -221,7 +191,7 @@ export default function SignInfoCard() {
 
         <Separator />
 
-        <Alert>
+        <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <strong>Lưu ý bảo mật:</strong> Luôn giữ private key của bạn an toàn

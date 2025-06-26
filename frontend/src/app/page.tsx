@@ -15,7 +15,7 @@ import Link from "next/link";
 const features = [
   {
     title: "Tạo cặp khóa RSA",
-    description: "Tạo cặp khóa RSA 2048-bit an toàn với thuật toán RSA",
+    description: "Tạo cặp khóa RSA 2048-4096 bit an toàn với thuật toán RSA",
     icon: Key,
     href: ROUTES.KEY_GENERATE,
     color: "bg-blue-500",
@@ -144,11 +144,11 @@ export default async function HomePage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Độ dài khóa:</span>
-                <span className="font-medium">2048-bit</span>
+                <span className="font-medium">2048-4096 bit</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Salt length:</span>
-                <span className="font-medium">32 bytes</span>
+                <span className="text-gray-600">Độ dài chữ ký:</span>
+                <span className="font-medium">2048 bits</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">API:</span>
