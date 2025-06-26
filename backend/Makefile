@@ -19,4 +19,5 @@ restart:
 remake:
 	@make destroy
 	@make init
-
+api:
+	docker compose exec api bash
