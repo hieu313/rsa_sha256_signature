@@ -17,7 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDateTime } from "@/lib/utils";
+import { checkIsExpired, formatDateTime } from "@/lib/utils";
 import type { PublicKey } from "@/types/key.type";
 import {
   AlertTriangle,
@@ -43,20 +43,6 @@ export function KeyDetailDialog({
 }: KeyDetailDialogProps) {
   if (!publicKey) return null;
 
-  const isExpired = (expiresAt: string | Date | null) => {
-    if (!expiresAt) return false;
-    return new Date() > new Date(expiresAt);
-  };
-
-  const getDaysUntilExpiry = (expiresAt: string | Date | null) => {
-    if (!expiresAt) return 0;
-    const now = new Date();
-    const expiry = new Date(expiresAt);
-    const diffTime = expiry.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -70,7 +56,7 @@ export function KeyDetailDialog({
     if (publicKey.revoked) {
       return <AlertTriangle className="w-5 h-5 text-red-600" />;
     }
-    if (isExpired(publicKey.expiresAt)) {
+    if (checkIsExpired(publicKey.expiresAt)) {
       return <Clock className="w-5 h-5 text-orange-600" />;
     }
     return <CheckCircle className="w-5 h-5 text-green-600" />;
@@ -94,7 +80,7 @@ export function KeyDetailDialog({
         </Tooltip>
       );
     }
-    if (isExpired(publicKey.expiresAt)) {
+    if (checkIsExpired(publicKey.expiresAt)) {
       return "Khóa đã hết hạn";
     }
     return "Khóa đang hoạt động";
@@ -104,7 +90,7 @@ export function KeyDetailDialog({
     if (publicKey.revoked) {
       return "text-red-600";
     }
-    if (isExpired(publicKey.expiresAt)) {
+    if (checkIsExpired(publicKey.expiresAt)) {
       return "text-orange-600";
     }
     return "text-green-600";
@@ -160,14 +146,15 @@ export function KeyDetailDialog({
                   {publicKey.revoked && (
                     <Badge variant="destructive">Đã thu hồi</Badge>
                   )}
-                  {isExpired(publicKey.expiresAt) && (
+                  {checkIsExpired(publicKey.expiresAt) && (
                     <Badge variant="destructive">Hết hạn</Badge>
                   )}
-                  {!publicKey.revoked && !isExpired(publicKey.expiresAt) && (
-                    <Badge variant="default" className="bg-green-600">
-                      Hoạt động
-                    </Badge>
-                  )}
+                  {!publicKey.revoked &&
+                    !checkIsExpired(publicKey.expiresAt) && (
+                      <Badge variant="default" className="bg-green-600">
+                        Hoạt động
+                      </Badge>
+                    )}
                 </div>
               </div>
             </div>
@@ -199,18 +186,13 @@ export function KeyDetailDialog({
                   <div className="text-sm mt-1">
                     <span
                       className={
-                        isExpired(publicKey.expiresAt)
+                        checkIsExpired(publicKey.expiresAt)
                           ? "text-red-600 font-medium"
                           : ""
                       }
                     >
                       {formatDateTime(publicKey.expiresAt)}
                     </span>
-                    {!isExpired(publicKey.expiresAt) && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        Còn {getDaysUntilExpiry(publicKey.expiresAt)} ngày
-                      </div>
-                    )}
                   </div>
                 </div>
 

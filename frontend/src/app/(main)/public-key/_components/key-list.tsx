@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateTime } from "@/lib/utils";
+import { checkIsExpired, formatDateTime } from "@/lib/utils";
 import { publicKeyService } from "@/services/public-key-service";
 import { PublicKey, PublicKeyMeta } from "@/types/key.type";
 import { Ban, Edit, Eye, Key, MoreHorizontal } from "lucide-react";
@@ -57,11 +57,6 @@ export const KeyList = () => {
     fetchKeys();
   }, []);
 
-  const isExpired = (date: string | Date | null) => {
-    if (!date) return false;
-    return new Date(date) < new Date();
-  };
-
   const getStatusBadges = (key: PublicKey) => {
     const badges = [];
 
@@ -73,7 +68,7 @@ export const KeyList = () => {
       );
     }
 
-    if (isExpired(key.expiresAt)) {
+    if (checkIsExpired(key.expiresAt)) {
       badges.push(
         <Badge key="expired" variant="destructive">
           Hết hạn
@@ -81,7 +76,7 @@ export const KeyList = () => {
       );
     }
 
-    if (!key.revoked && !isExpired(key.expiresAt)) {
+    if (!key.revoked && !checkIsExpired(key.expiresAt)) {
       badges.push(
         <Badge key="active" variant="success">
           Hoạt động
@@ -151,7 +146,7 @@ export const KeyList = () => {
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Thời gian tạo</TableHead>
                   <TableHead>Thời gian hết hạn</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
+                  <TableHead className="text-center">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -184,7 +179,7 @@ export const KeyList = () => {
                       <TableCell className="text-sm text-gray-600">
                         <span
                           className={
-                            isExpired(key.expiresAt)
+                            checkIsExpired(key.expiresAt)
                               ? "text-red-600 font-medium"
                               : ""
                           }
@@ -192,8 +187,8 @@ export const KeyList = () => {
                           {formatDateTime(key.expiresAt)}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-2">
                           <Button
                             variant="outline"
                             size="sm"

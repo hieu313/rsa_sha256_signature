@@ -3,6 +3,8 @@ import http from "@/lib/http";
 import {
   ActivePublicKeyResponse,
   PublicKeyListResponse,
+  PublicKeyUpdateBody,
+  PublicKeyUpdateResponse,
   PublicKeyUploadBody,
 } from "@/types/key.type";
 
@@ -24,5 +26,10 @@ export const publicKeyService = {
           keyAlias: keyAlias || undefined,
         },
       })
+      .then((res) => res.data),
+
+  updatePublicKey: async (keyId: string, body: PublicKeyUpdateBody) =>
+    await http
+      .patch<PublicKeyUpdateResponse>(API_ROUTES.PUBLIC_KEY.UPDATE(keyId), body)
       .then((res) => res.data),
 };

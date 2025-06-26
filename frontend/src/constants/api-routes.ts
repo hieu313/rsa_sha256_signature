@@ -11,6 +11,7 @@ export const API_ROUTES = {
   PUBLIC_KEY: {
     UPLOAD: `/public-keys`,
     REVOKE: (keyId: string) => `/public-keys/${keyId}`,
+    UPDATE: (keyId: string) => `/public-keys/${keyId}`,
   },
   SIGN: {
     CONTENT: `/sign/create-document`,

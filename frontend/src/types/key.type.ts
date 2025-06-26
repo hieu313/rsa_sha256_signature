@@ -1,4 +1,7 @@
-import { publicKeySchema } from "@/schemas/public-key.schema";
+import {
+  publicKeySchema,
+  publicKeyUpdateSchema,
+} from "@/schemas/public-key.schema";
 import { SuccessResponse } from "@/types/api.type";
 import { z } from "zod";
 
@@ -33,3 +36,6 @@ export type PublicKeyListResponse = SuccessResponse<{
   meta: PublicKeyMeta;
 }>;
 export type ActivePublicKeyResponse = SuccessResponse<PublicKey[]>;
+
+export type PublicKeyUpdateBody = z.infer<typeof publicKeyUpdateSchema>;
+export type PublicKeyUpdateResponse = SuccessResponse<PublicKey>;

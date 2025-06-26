@@ -59,3 +59,7 @@ export const formatDateTime = (
   if (!date) return "N/A";
   return format(new Date(date), formatType);
 };
+export const checkIsExpired = (date: string | Date | null) => {
+  if (!date) return false;
+  return new Date() > new Date(date);
+};

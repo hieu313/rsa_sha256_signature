@@ -22,8 +22,6 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const isAuthenticated =
     cookieStore.get(AUTH_COOKIE_NAME)?.value !== undefined;
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("cookieStore", cookieStore.get(AUTH_COOKIE_NAME));
 
   return (
     <html lang="vi">

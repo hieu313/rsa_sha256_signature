@@ -1,3 +1,4 @@
+import { RsaHelper } from "@/lib/rsa";
 import { z } from "zod";
 
 export const publicKeySchema = z
@@ -8,8 +9,9 @@ export const publicKeySchema = z
       .refine(
         (value) => {
           // Kiểm tra format PEM cơ bản
-          const pemRegex =
-            /^-----BEGIN PUBLIC KEY-----\n[\s\S]*\n-----END PUBLIC KEY-----$/;
+          const pemRegex = new RegExp(
+            `^${RsaHelper.BEGIN_PUBLIC_KEY}\\n[\\s\\S]*\\n${RsaHelper.END_PUBLIC_KEY}$`
+          );
           return pemRegex.test(value);
         },
         { message: "Public key PEM không đúng định dạng" }
@@ -19,10 +21,9 @@ export const publicKeySchema = z
           // Kiểm tra nội dung base64 hợp lệ
           try {
             const cleanPem = value
-              .replace("-----BEGIN PUBLIC KEY-----", "")
-              .replace("-----END PUBLIC KEY-----", "")
+              .replace(RsaHelper.BEGIN_PUBLIC_KEY, "")
+              .replace(RsaHelper.END_PUBLIC_KEY, "")
               .replaceAll("\\s+", "");
-            console.log(cleanPem);
             atob(cleanPem); // Thử decode base64
             return true;
           } catch (error) {
@@ -43,3 +44,9 @@ export const publicKeySchema = z
       });
     }
   });
+
+export const publicKeyUpdateSchema = z.object({
+  keyAlias: z.string().min(1, { message: "Vui lòng nhập tên key" }),
+  expiresAt: z.date().nullable(),
+  isDefault: z.boolean(),
+});
