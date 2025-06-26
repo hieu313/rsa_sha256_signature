@@ -1,0 +1,23 @@
+# docker compose up -d
+
+services:
+  app:
+    container_name: rsa_system_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${DOCKER_APP_PORT:-3000}:3000"
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    restart: unless-stopped
+    networks:
+      - rsa_system
+volumes:
+  rsa_system_app_data:
+    driver: local
+
+networks:
+  rsa_system:
+    name: rsa_system
+    driver: bridge
